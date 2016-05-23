@@ -17,11 +17,9 @@ all: deps
 
 deps:
 	@printf "$(OK_COLOR)==> Installing dependencies$(NO_COLOR)\n"
-	@go version | grep 1.4 ; if [ $$? -eq 0 ]; then \
-		printf "$(OK_COLOR)Installing godep and restoring dependencies$(NO_COLOR)\n"; \
+	@printf "$(OK_COLOR)==> Installing godep and restoring dependencies$(NO_COLOR)\n"; \
 		go get github.com/tools/godep; \
-		godep restore; \
-	fi
+		godep restore;
 
 clean:
 	@rm -rf bin/ pkg/ src/

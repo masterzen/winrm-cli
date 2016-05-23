@@ -7,14 +7,22 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"fmt"
+	"testing"
 	"time"
 
 	. "gopkg.in/check.v1"
 )
 
+// Hook up gocheck into the "go test" runner.
+func Test(t *testing.T) { TestingT(t) }
+
+type WinRMCliSuite struct{}
+
+var _ = Suite(&WinRMCliSuite{})
+
 var rsaByteSizes = []int{512, 1024, 2048, 4096}
 
-func (s *WinRMSuite) TestNewCertRSASize(c *C) {
+func (s *WinRMCliSuite) TestNewCertRSASize(c *C) {
 	for _, size := range rsaByteSizes {
 		config := CertConfig{
 			Subject:   pkix.Name{CommonName: "winrm client cert"},
@@ -51,7 +59,7 @@ func (s *WinRMSuite) TestNewCertRSASize(c *C) {
 
 var formats = []int{P224, P256, P384, P521}
 
-func (s *WinRMSuite) TestNewCertECDSATypes(c *C) {
+func (s *WinRMCliSuite) TestNewCertECDSATypes(c *C) {
 	for _, f := range formats {
 		config := CertConfig{
 			Subject:   pkix.Name{CommonName: "winrm client cert"},

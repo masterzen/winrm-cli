@@ -24,7 +24,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/masterzen/winrm/winrm"
+	"github.com/masterzen/winrm"
 )
 
 func main() {
@@ -57,17 +57,17 @@ func main() {
 
 	if gencert {
 		cersize := pickSizeCert(certsize)
-		config := winrm.CertConfig{
+		config := CertConfig{
 			Subject: pkix.Name{
 				CommonName: "winrm client cert",
 			},
 			ValidFrom: time.Now(),
 			ValidFor:  365 * 24 * time.Hour,
 			SizeT:     cersize,
-			Method:    winrm.RSA,
+			Method:    RSA,
 		}
 
-		certPem, privPem, err := winrm.NewCert(config)
+		certPem, privPem, err := NewCert(config)
 		check(err)
 		err = ioutil.WriteFile("cert.cer", []byte(certPem), 0644)
 		check(err)

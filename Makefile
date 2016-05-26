@@ -7,13 +7,16 @@ TEST?=$(shell go list ./... | grep -v vendor)
 
 # Get the current full sha from git
 GITSHA:=$(shell git rev-parse HEAD)
+LIBGITSHA:=$(shell cat Godeps/Godeps.json | egrep -A2 "ImportPath.*masterzen/winrm\"" | fgrep "Rev" | sed -r 's/.*"Rev":.*"([a-f0-9]+).*/\1/' || "N/A")
+
 # Get the current local branch name from git (if we can, this may be blank)
 GITBRANCH:=$(shell git symbolic-ref --short HEAD 2>/dev/null)
 
 all: deps
 	@mkdir -p bin/
 	@printf "$(OK_COLOR)==> Building$(NO_COLOR)\n"
-	@GO15VENDOREXPERIMENT=1 go build -o $(GOPATH)/bin/winrm .
+	@printf "cli: ${GITSHA}, lib: ${LIBGITSHA}\n"
+	@GO15VENDOREXPERIMENT=1 go build -ldflags "-v -n -X github.com/masterzen/winrm-cli/version.GitSHA=${GITSHA} -X github.com/masterzen/winrm.GitSHA=${LIBGITSHA}" -o $(GOPATH)/bin/winrm .
 
 deps:
 	@printf "$(OK_COLOR)==> Installing dependencies$(NO_COLOR)\n"

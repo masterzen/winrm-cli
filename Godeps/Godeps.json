@@ -2,6 +2,9 @@
 	"ImportPath": "github.com/masterzen/winrm-cli",
 	"GoVersion": "go1.6",
 	"GodepVersion": "v70",
+	"Packages": [
+		"./..."
+	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/masterzen/simplexml/dom",
@@ -9,11 +12,11 @@
 		},
 		{
 			"ImportPath": "github.com/masterzen/winrm",
-			"Rev": "420524ec71a57d67146f354743fb1ee0fb2a5f53"
+			"Rev": "2705dc94ad2642f1eee260ff6d4d36f08171cb45"
 		},
 		{
 			"ImportPath": "github.com/masterzen/winrm/soap",
-			"Rev": "420524ec71a57d67146f354743fb1ee0fb2a5f53"
+			"Rev": "2705dc94ad2642f1eee260ff6d4d36f08171cb45"
 		},
 		{
 			"ImportPath": "github.com/masterzen/xmlpath",
@@ -22,6 +25,11 @@
 		{
 			"ImportPath": "github.com/nu7hatch/gouuid",
 			"Rev": "179d4d0c4d8d407a32af483c2354df1d2c91e6c3"
+		},
+		{
+			"ImportPath": "github.com/urfave/cli",
+			"Comment": "v1.17.0-42-g595ba45",
+			"Rev": "595ba45e735c1e9c1f9ddc9e2ef21997fca893f2"
 		},
 		{
 			"ImportPath": "gopkg.in/check.v1",

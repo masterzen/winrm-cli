@@ -19,7 +19,20 @@ var Commands = []cli.Command{
 			cli.IntFlag{
 				Name:  "size, s",
 				Value: 2048,
-				Usage: "size of the generated private key (possible values: 512, 1024, 2048, 4096)",
+				Usage: "Pick a standard size RSA or ECDSA",
+			},
+			cli.BoolFlag{
+				Name:  "rsa, r",
+				Usage: "Generate with RSA encryption",
+			},
+			cli.BoolFlag{
+				Name:  "ecdsa, e",
+				Usage: "Generate with ECDSA encryption",
+			},
+			cli.StringFlag{
+				Name:  "common-name, cn",
+				Value: "winrm cert",
+				Usage: "Set the common name for the Subject cert field",
 			},
 		},
 	},
@@ -37,13 +50,13 @@ var Commands = []cli.Command{
 			cli.StringFlag{
 				Name:   "username, u",
 				Value:  "vagrant",
-				Usage:  "winrm admin username",
+				Usage:  "Winrm admin username",
 				EnvVar: "WINRM_USER",
 			},
 			cli.StringFlag{
 				Name:   "password, p",
 				Value:  "vagrant",
-				Usage:  "winrm admin password",
+				Usage:  "Winrm admin password",
 				EnvVar: "WINRM_PASSWORD",
 			},
 			cli.IntFlag{
@@ -53,11 +66,11 @@ var Commands = []cli.Command{
 			},
 			cli.BoolFlag{
 				Name:  "https",
-				Usage: "use https",
+				Usage: "Use https",
 			},
 			cli.BoolFlag{
 				Name:  "insecure, i",
-				Usage: "skip SSL validation",
+				Usage: "Skip SSL validation",
 			},
 			cli.StringFlag{
 				Name:  "cacert",

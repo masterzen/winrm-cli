@@ -10,6 +10,7 @@ import (
 )
 
 func CmdExec(c *cli.Context) error {
+
 	var (
 		certBytes      []byte
 		err            error
@@ -21,8 +22,6 @@ func CmdExec(c *cli.Context) error {
 		if err != nil {
 			return exitError(err)
 		}
-	} else {
-		certBytes = nil
 	}
 
 	cmd := c.Args()[0]
@@ -34,6 +33,7 @@ func CmdExec(c *cli.Context) error {
 
 	endpoint := winrm.NewEndpointWithTimeout(c.String("hostname"), c.Int("port"), c.Bool("https"),
 		c.Bool("insecure"), &certBytes, connectTimeout)
+
 	client, err := winrm.NewClient(endpoint, c.String("username"), c.String("password"))
 	if err != nil {
 		return exitError(err)
@@ -48,8 +48,5 @@ func CmdExec(c *cli.Context) error {
 }
 
 func exitError(err error) error {
-	if err != nil {
-		return cli.NewExitError(err.Error(), 1)
-	}
-	return nil
+	return cli.NewExitError(err.Error(), 1)
 }

@@ -35,7 +35,7 @@ type CertConfig struct {
 	// SizeT can represent the size of bytes RSA cert if you specify in the
 	SizeT int
 	// Method to be RSA or it can be ECDSA flag if you specify the ECDSA flag
-	Method KeyType
+	Method KeyType //RSA or ECDSA
 }
 
 // definition flags for specific elliptic curves formats
@@ -135,7 +135,7 @@ func NewCert(config CertConfig) (string, string, error) {
 	// get asn1 encoded info of the subject pkix
 	value, err := getUPNExtensionValue(config.Subject)
 	if err != nil {
-		return "", "", fmt.Errorf("Can't marshal asn1 encoded")
+		return "", "", fmt.Errorf("Can't marshal asn1 encoded %s", err)
 	}
 
 	// A serial number can be up to 20 octets in size.
@@ -155,7 +155,6 @@ func NewCert(config CertConfig) (string, string, error) {
 		Version:     2,
 		NotBefore:   config.ValidFrom,
 		NotAfter:    notAfter,
-		KeyUsage:    x509.KeyUsageKeyEncipherment,
 		ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth},
 		ExtraExtensions: []pkix.Extension{
 			{

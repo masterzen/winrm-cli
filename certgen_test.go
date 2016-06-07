@@ -50,7 +50,7 @@ func (s *WinRMCliSuite) TestNewCertRSASize(c *C) {
 				Critical: false,
 			},
 		}
-		c.Assert(caCert.Extensions[2], DeepEquals, expected[0])
+		c.Assert(caCert.Extensions[1], DeepEquals, expected[0])
 		c.Assert(caCert.PublicKeyAlgorithm, Equals, x509.RSA)
 		c.Assert(caCert.ExtKeyUsage[0], Equals, x509.ExtKeyUsageClientAuth)
 
@@ -88,7 +88,7 @@ func (s *WinRMCliSuite) TestNewCertECDSATypes(c *C) {
 				Critical: false,
 			},
 		}
-		c.Assert(caCert.Extensions[2], DeepEquals, expected[0])
+		c.Assert(caCert.Extensions[1], DeepEquals, expected[0])
 		c.Assert(caCert.PublicKeyAlgorithm, Equals, x509.ECDSA)
 		c.Assert(caCert.ExtKeyUsage[0], Equals, x509.ExtKeyUsageClientAuth)
 	}

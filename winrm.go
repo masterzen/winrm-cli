@@ -18,6 +18,7 @@ package main
 
 import (
 	"crypto/x509/pkix"
+	"errors"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -89,6 +90,10 @@ func main() {
 		}
 
 		cmd = flag.Arg(0)
+
+		if cmd == "" {
+			check(errors.New("ERROR: Please enter the command to execute on the command line"))
+		}
 
 		connectTimeout, err = time.ParseDuration(timeout)
 		check(err)

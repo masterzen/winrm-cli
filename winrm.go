@@ -18,11 +18,13 @@ package main
 
 import (
 	"crypto/x509/pkix"
+	"encoding/base64"
 	"errors"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/masterzen/winrm"
@@ -35,6 +37,7 @@ func main() {
 		pass     string
 		cmd      string
 		port     int
+		encoded  bool
 		https    bool
 		insecure bool
 		cacert   string
@@ -46,6 +49,7 @@ func main() {
 	flag.StringVar(&hostname, "hostname", "localhost", "winrm host")
 	flag.StringVar(&user, "username", "vagrant", "winrm admin username")
 	flag.StringVar(&pass, "password", "vagrant", "winrm admin password")
+	flag.BoolVar(&encoded, "encoded", false, "use base64 encoded password")
 	flag.IntVar(&port, "port", 5985, "winrm port")
 	flag.BoolVar(&https, "https", false, "use https")
 	flag.BoolVar(&insecure, "insecure", false, "skip SSL validation")
@@ -55,6 +59,12 @@ func main() {
 	flag.StringVar(&timeout, "timeout", "0s", "connection timeout")
 
 	flag.Parse()
+
+	if encoded {
+		data, err := base64.StdEncoding.DecodeString(pass)
+		check(err)
+		pass = strings.TrimRight(string(data), "\r\n")
+	}
 
 	if gencert {
 		cersize := pickSizeCert(certsize)

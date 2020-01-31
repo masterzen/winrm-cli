@@ -1,0 +1,14 @@
+github.com/masterzen/simplexml v0.0.0-20140219194429-95ba30457eb1 h1:cLEbk5d4t8CDqmQtCMc2lk91cflxOrj31k9LTIabPoA=
+github.com/masterzen/simplexml v0.0.0-20140219194429-95ba30457eb1/go.mod h1:kCEbxUJlNDEBNbdQMkPSp6yaKcRXVI6f4ddk8Riv4bc=
+github.com/masterzen/winrm v0.0.0-20160523093139-420524ec71a5 h1:hRSZcZ0EnNutaNzjjN8tjSNc4NGoUcfoPZELID+s+mk=
+github.com/masterzen/winrm v0.0.0-20160523093139-420524ec71a5/go.mod h1:CfZSN7zwz5gJiFhZJz49Uzk7mEBHIceWmbFmYx7Hf7E=
+github.com/masterzen/xmlpath v0.0.0-20140218185901-13f4951698ad h1:x50MyJNOPLsHR1euYRIaBx3Z2wlE0UPfZOHSYD+Flo0=
+github.com/masterzen/xmlpath v0.0.0-20140218185901-13f4951698ad/go.mod h1:A0zPC53iKKKcXYxr4ROjpQRQ5FgJXtelNdSmHHuq/tY=
+github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d h1:VhgPp6v9qf9Agr/56bj7Y/xa04UccTW04VP0Qed4vnQ=
+github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d/go.mod h1:YUTz3bUH2ZwIWBy3CJBeOBEugqcmXREj14T+iG/4k4U=
+gopkg.in/check.v1 v1.0.0-20150626105028-b3d3430320d4 h1:C6sDrSg6yNhY6IA5M5sWGlkdlUALsqBjenosFFazkTg=
+gopkg.in/check.v1 v1.0.0-20150626105028-b3d3430320d4/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+launchpad.net/gocheck v0.0.0-20140225173054-000000000087 h1:Izowp2XBH6Ya6rv+hqbceQyw/gSGoXfH/UPoTGduL54=
+launchpad.net/gocheck v0.0.0-20140225173054-000000000087/go.mod h1:hj7XX3B/0A+80Vse0e+BUHsHMTEhd0O4cpUHr/e/BUM=
+launchpad.net/xmlpath v0.0.0-20130614043138-000000000004 h1:B8nNZBUrx8YufDCAJjvO/lVs4GxXMQHyrjwJdJzXMFg=
+launchpad.net/xmlpath v0.0.0-20130614043138-000000000004/go.mod h1:vqyExLOM3qBx7mvYRkoxjSCF945s0mbe7YynlKYXtsA=

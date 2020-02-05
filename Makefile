@@ -13,11 +13,11 @@ GITBRANCH:=$(shell git symbolic-ref --short HEAD 2>/dev/null)
 all: deps
 	@mkdir -p bin/
 	@printf "$(OK_COLOR)==> Building$(NO_COLOR)\n"
-	@GO15VENDOREXPERIMENT=1 go build -o $(GOPATH)/bin/winrm .
+	@go build -o $(GOPATH)/bin/winrm .
 
 deps:
 	@printf "$(OK_COLOR)==> Installing dependencies$(NO_COLOR)\n"
-		go mod tidy;
+		@go mod tidy;
 
 clean:
 	@rm -rf bin/ pkg/ src/

@@ -35,6 +35,7 @@ func main() {
 		hostname string
 		user     string
 		pass     string
+		ntlm     bool
 		cmd      string
 		port     int
 		encoded  bool
@@ -49,6 +50,7 @@ func main() {
 	flag.StringVar(&hostname, "hostname", "localhost", "winrm host")
 	flag.StringVar(&user, "username", "vagrant", "winrm admin username")
 	flag.StringVar(&pass, "password", "vagrant", "winrm admin password")
+	flag.BoolVar(&ntlm, "ntlm", false, "use use ntlm auth")
 	flag.BoolVar(&encoded, "encoded", false, "use base64 encoded password")
 	flag.IntVar(&port, "port", 5985, "winrm port")
 	flag.BoolVar(&https, "https", false, "use https")
@@ -108,8 +110,15 @@ func main() {
 		connectTimeout, err = time.ParseDuration(timeout)
 		check(err)
 
-		endpoint := winrm.NewEndpointWithTimeout(hostname, port, https, insecure, &certBytes, connectTimeout)
-		client, err := winrm.NewClient(endpoint, user, pass)
+		endpoint := winrm.NewEndpoint(hostname, port, https, insecure, nil, certBytes, nil, connectTimeout)
+
+		params := winrm.DefaultParameters
+		
+		if ntlm {
+			params.TransportDecorator = func() winrm.Transporter { return &winrm.ClientNTLM{} }
+		}
+
+		client, err := winrm.NewClientWithParameters(endpoint, user, pass, params)
 		check(err)
 
 		exitCode, err := client.RunWithInput(cmd, os.Stdout, os.Stderr, os.Stdin)

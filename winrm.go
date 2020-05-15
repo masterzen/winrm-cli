@@ -28,6 +28,7 @@ import (
 	"time"
 
 	"github.com/masterzen/winrm"
+	"github.com/mattn/go-isatty"
 )
 
 func main() {
@@ -113,7 +114,7 @@ func main() {
 		endpoint := winrm.NewEndpoint(hostname, port, https, insecure, nil, certBytes, nil, connectTimeout)
 
 		params := winrm.DefaultParameters
-		
+
 		if ntlm {
 			params.TransportDecorator = func() winrm.Transporter { return &winrm.ClientNTLM{} }
 		}
@@ -121,7 +122,12 @@ func main() {
 		client, err := winrm.NewClientWithParameters(endpoint, user, pass, params)
 		check(err)
 
-		exitCode, err := client.RunWithInput(cmd, os.Stdout, os.Stderr, os.Stdin)
+		exitCode := 0
+		if isatty.IsTerminal(os.Stdin.Fd()) {
+			exitCode, err = client.Run(cmd, os.Stdout, os.Stderr)
+		} else {
+			exitCode, err = client.RunWithInput(cmd, os.Stdout, os.Stderr, os.Stdin)
+		}
 		check(err)
 
 		os.Exit(exitCode)

@@ -33,20 +33,21 @@ import (
 
 func main() {
 	var (
-		hostname string
-		user     string
-		pass     string
-		ntlm     bool
-		kerberos bool
-		cmd      string
-		port     int
-		encoded  bool
-		https    bool
-		insecure bool
-		cacert   string
-		gencert  bool
-		certsize string
-		timeout  string
+		hostname  string
+		user      string
+		pass      string
+		ntlm      bool
+		kerberos  bool
+		nonscheck bool
+		cmd       string
+		port      int
+		encoded   bool
+		https     bool
+		insecure  bool
+		cacert    string
+		gencert   bool
+		certsize  string
+		timeout   string
 	)
 
 	flag.StringVar(&hostname, "hostname", "localhost", "winrm host")
@@ -54,6 +55,7 @@ func main() {
 	flag.StringVar(&pass, "password", "vagrant", "winrm admin password")
 	flag.BoolVar(&ntlm, "ntlm", false, "use use ntlm auth")
 	flag.BoolVar(&kerberos, "kerberos", false, "use kerberos auth. You need a TGT for this (obtained via kinit)")
+	flag.BoolVar(&nonscheck, "no-dns-check", false, "using kerberos auth, do not canonicalize hostname. Useful when reverse not available")
 	flag.BoolVar(&encoded, "encoded", false, "use base64 encoded password")
 	flag.IntVar(&port, "port", 5985, "winrm port")
 	flag.BoolVar(&https, "https", false, "use https")
@@ -122,7 +124,11 @@ func main() {
 		}
 
 		if kerberos {
-			params.TransportDecorator = func() winrm.Transporter { return &winrm.ClientKerberos{} }
+			if nonscheck {
+				params.TransportDecorator = func() winrm.Transporter { return &winrm.ClientKerberosWithNoCanonicalize{} }
+			} else {
+				params.TransportDecorator = func() winrm.Transporter { return &winrm.ClientKerberos{} }
+			}
 		}
 
 		client, err := winrm.NewClientWithParameters(endpoint, user, pass, params)

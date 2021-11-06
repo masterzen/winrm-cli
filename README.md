@@ -62,14 +62,13 @@ Once built, you can run remote commands like this:
 
 ### kerberos authentication
 
-Ensure you have a ticket granting ticket before running winrm (use kinit/klist)
-Also make sure remote.domain.com can be resolved forward and reverse
+Ensure you have a ticket granting ticket before running winrm (use kinit/klist). Also make sure remote.domain.com can be resolved forward and reverse
 
 ```sh
 ./winrm -kerberos -hostname remote.domain.com "ipconfig /all"
 ```
-These options can be set as environment variables before running winrm :
-KRB5_CONFIG points the kerberos config file. Default value is "/etc/krb5.conf"
+These options can be set as environment variables before running winrm :  
+KRB5_CONFIG points the kerberos config file. Default value is "/etc/krb5.conf"  
 KRB5CCNAME points the credential cache file. Default value is "/tmp/krb5cc_${UID}"
 
 ## Docker

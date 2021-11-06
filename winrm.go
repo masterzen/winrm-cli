@@ -37,6 +37,7 @@ func main() {
 		user     string
 		pass     string
 		ntlm     bool
+		kerberos bool
 		cmd      string
 		port     int
 		encoded  bool
@@ -52,6 +53,7 @@ func main() {
 	flag.StringVar(&user, "username", "vagrant", "winrm admin username")
 	flag.StringVar(&pass, "password", "vagrant", "winrm admin password")
 	flag.BoolVar(&ntlm, "ntlm", false, "use use ntlm auth")
+	flag.BoolVar(&kerberos, "kerberos", false, "use kerberos auth. You need a TGT for this (obtained via kinit)")
 	flag.BoolVar(&encoded, "encoded", false, "use base64 encoded password")
 	flag.IntVar(&port, "port", 5985, "winrm port")
 	flag.BoolVar(&https, "https", false, "use https")
@@ -117,6 +119,10 @@ func main() {
 
 		if ntlm {
 			params.TransportDecorator = func() winrm.Transporter { return &winrm.ClientNTLM{} }
+		}
+
+		if kerberos {
+			params.TransportDecorator = func() winrm.Transporter { return &winrm.ClientKerberos{} }
 		}
 
 		client, err := winrm.NewClientWithParameters(endpoint, user, pass, params)

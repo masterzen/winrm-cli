@@ -38,7 +38,8 @@ func main() {
 		pass      string
 		ntlm      bool
 		kerberos  bool
-		nonscheck bool
+		realm     string
+		ccache    string
 		cmd       string
 		port      int
 		encoded   bool
@@ -54,8 +55,9 @@ func main() {
 	flag.StringVar(&user, "username", "vagrant", "winrm admin username")
 	flag.StringVar(&pass, "password", "vagrant", "winrm admin password")
 	flag.BoolVar(&ntlm, "ntlm", false, "use use ntlm auth")
-	flag.BoolVar(&kerberos, "kerberos", false, "use kerberos auth. You need a TGT for this (obtained via kinit)")
-	flag.BoolVar(&nonscheck, "no-dns-check", false, "using kerberos auth, do not canonicalize hostname. Useful when reverse not available")
+	flag.BoolVar(&kerberos, "kerberos", false, "use kerberos auth")
+	flag.StringVar(&realm, "realm", "", "kerberos realm")
+	flag.StringVar(&ccache, "ccache", "", "kerberos credential cache file, usually /tmp/krb5cc_$UID")
 	flag.BoolVar(&encoded, "encoded", false, "use base64 encoded password")
 	flag.IntVar(&port, "port", 5985, "winrm port")
 	flag.BoolVar(&https, "https", false, "use https")
@@ -124,10 +126,23 @@ func main() {
 		}
 
 		if kerberos {
-			if nonscheck {
-				params.TransportDecorator = func() winrm.Transporter { return &winrm.ClientKerberosWithNoCanonicalize{} }
-			} else {
-				params.TransportDecorator = func() winrm.Transporter { return &winrm.ClientKerberos{} }
+			proto := "http"
+			if https == true {
+				proto = "https"
+			}
+
+			params.TransportDecorator = func() winrm.Transporter { 
+				return &winrm.ClientKerberos{
+					Username:  user,
+					Password:  pass,
+					Hostname:  hostname,
+					Realm:     realm,
+					Port:      port,
+					Proto:     proto,
+					KrbConf:   "/etc/krb5.conf",
+					KrbCCache: ccache,
+					SPN:       fmt.Sprintf("HTTP/%s", hostname),
+				}
 			}
 		}
 

@@ -33,25 +33,31 @@ import (
 
 func main() {
 	var (
-		hostname string
-		user     string
-		pass     string
-		ntlm     bool
-		cmd      string
-		port     int
-		encoded  bool
-		https    bool
-		insecure bool
-		cacert   string
-		gencert  bool
-		certsize string
-		timeout  string
+		hostname  string
+		user      string
+		pass      string
+		ntlm      bool
+		kerberos  bool
+		realm     string
+		ccache    string
+		cmd       string
+		port      int
+		encoded   bool
+		https     bool
+		insecure  bool
+		cacert    string
+		gencert   bool
+		certsize  string
+		timeout   string
 	)
 
 	flag.StringVar(&hostname, "hostname", "localhost", "winrm host")
 	flag.StringVar(&user, "username", "vagrant", "winrm admin username")
 	flag.StringVar(&pass, "password", "vagrant", "winrm admin password")
 	flag.BoolVar(&ntlm, "ntlm", false, "use use ntlm auth")
+	flag.BoolVar(&kerberos, "kerberos", false, "use kerberos auth")
+	flag.StringVar(&realm, "realm", "", "kerberos realm")
+	flag.StringVar(&ccache, "ccache", "", "kerberos credential cache file, usually /tmp/krb5cc_$UID")
 	flag.BoolVar(&encoded, "encoded", false, "use base64 encoded password")
 	flag.IntVar(&port, "port", 5985, "winrm port")
 	flag.BoolVar(&https, "https", false, "use https")
@@ -117,6 +123,27 @@ func main() {
 
 		if ntlm {
 			params.TransportDecorator = func() winrm.Transporter { return &winrm.ClientNTLM{} }
+		}
+
+		if kerberos {
+			proto := "http"
+			if https == true {
+				proto = "https"
+			}
+
+			params.TransportDecorator = func() winrm.Transporter { 
+				return &winrm.ClientKerberos{
+					Username:  user,
+					Password:  pass,
+					Hostname:  hostname,
+					Realm:     realm,
+					Port:      port,
+					Proto:     proto,
+					KrbConf:   "/etc/krb5.conf",
+					KrbCCache: ccache,
+					SPN:       fmt.Sprintf("HTTP/%s", hostname),
+				}
+			}
 		}
 
 		client, err := winrm.NewClientWithParameters(endpoint, user, pass, params)

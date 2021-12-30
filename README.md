@@ -3,7 +3,7 @@
 This is a Go command-line executable to execute remote commands on Windows machines through
 the use of WinRM/WinRS.
 
-This tool support domain users via kerberos switch. For this to work, you will need a valid TGT (use kinit), a valid krb5.conf and your target must have a resolvable reverse entry.
+This tool support domain users via kerberos switch. You can either use a login/password combination, or an existing credential cache (obtained via "kinit")
 
 ## Contact
 
@@ -11,9 +11,9 @@ This tool support domain users via kerberos switch. For this to work, you will n
 
 
 ## Getting Started
-WinRM is available on Windows Server 2008 and up. This project natively supports basic authentication for local accounts, see the steps in the next section on how to prepare the remote Windows machine for this scenario. The authentication model is pluggable, see below for an example on using Negotiate/NTLM authentication (e.g. for connecting to vanilla Azure VMs).
+WinRM is available on Windows Server 2008 and up. This project natively supports basic authentication for local accounts, see the steps in the next section on how to prepare the remote Windows machine for this scenario. The authentication model is pluggable, see below for an example on using Negotiate/NTLM authentication (e.g. for connecting to vanilla Azure VMs) or kerberos (for domain accounts)
 
-### Preparing the remote Windows machine for Basic authentication (Not needed for Kerberos)
+### Preparing the remote Windows machine for Basic authentication
 If you can not use kerberos, use basic authentication for local accounts. The remote windows system must be prepared for winrm:
 
 _For a PowerShell script to do what is described below in one go, check [Richard Downer's blog](http://www.frontiertown.co.uk/2011/12/overthere-control-windows-from-java/)_
@@ -33,6 +33,16 @@ __N.B.:__ Do not disable Negotiate authentication as the windows `winrm` command
 __N.B.:__ The `MaxMemoryPerShellMB` option has no effects on some Windows 2008R2 systems because of a WinRM bug. Make sure to install the hotfix described [Microsoft Knowledge Base article #2842230](http://support.microsoft.com/kb/2842230) if you need to run commands that uses more than 150MB of memory.
 
 For more information on WinRM, please refer to <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa384426(v=vs.85).aspx">the online documentation at Microsoft's DevCenter</a>.
+
+### Preparing the remote Windows machine for Kerberos authentication
+The remote windows system must be prepared:
+
+On the remote host, a PowerShell prompt, using the __Run as Administrator__ option and paste in the following lines:
+
+    winrm quickconfig
+    y
+    winrm set winrm/config/service '@{AllowUnencrypted="true"}'
+    winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="1024"}'
 
 ### Building the winrm-cli executable
 
@@ -62,14 +72,17 @@ Once built, you can run remote commands like this:
 
 ### kerberos authentication
 
-Ensure you have a ticket granting ticket before running winrm (use kinit/klist). Also make sure remote.domain.com can be resolved forward and reverse
+Either ensure you have a ticket granting ticket before running winrm (use kinit/klist), and run it with -ccache:
 
 ```sh
-./winrm -kerberos -hostname remote.domain.com "ipconfig /all"
+./winrm -kerberos -ccache /tmp/krb5cc_10007 -hostname remote.domain.com "ipconfig /all"
 ```
-These options can be set as environment variables before running winrm :  
-KRB5_CONFIG points the kerberos config file. Default value is "/etc/krb5.conf"  
-KRB5CCNAME points the credential cache file. Default value is "/tmp/krb5cc_${UID}"
+
+Or if you want to user login/password :
+
+```sh
+./winrm -kerberos -username test -password s3cr3t -hostname remote.domain.com -realm DOMAIN.COM "ipconfig /all"
+```
 
 ## Docker
 
